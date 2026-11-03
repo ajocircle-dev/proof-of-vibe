@@ -248,6 +248,23 @@ export async function attestOnchain(opts: {
   return { uid: "", txHash: hash };
 }
 
+
+function unwrapDecoded(value: unknown): unknown {
+  if (
+    value &&
+    typeof value === "object" &&
+    "hex" in (value as { hex?: string }) &&
+    (value as { type?: string }).type === "BigNumber"
+  ) {
+    try {
+      return BigInt((value as { hex: string }).hex).toString();
+    } catch {
+      return value;
+    }
+  }
+  return value;
+}
+
 export type TimelineItem = {
   uid: string;
   attester: string;
@@ -317,7 +334,7 @@ export async function queryTimeline(
         value: { value: unknown };
       }>;
       for (const entry of arr) {
-        decoded[entry.name] = entry.value?.value;
+        decoded[entry.name] = unwrapDecoded(entry.value?.value);
       }
     } catch {
       decoded = { raw: a.decodedDataJson };

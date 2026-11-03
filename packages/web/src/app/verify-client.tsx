@@ -19,6 +19,24 @@ type AgentCard = {
   tokenUri: string;
 };
 
+
+/** easscan packs uint256 as { type: "BigNumber", hex: "0x..." }. */
+function unwrapDecoded(value: unknown): unknown {
+  if (
+    value &&
+    typeof value === "object" &&
+    "hex" in (value as { hex?: string }) &&
+    (value as { type?: string }).type === "BigNumber"
+  ) {
+    try {
+      return BigInt((value as { hex: string }).hex).toString();
+    } catch {
+      return value;
+    }
+  }
+  return value;
+}
+
 const DEFAULT_SCHEMA =
   process.env.NEXT_PUBLIC_POV_SCHEMA_UID ||
   "0x7a968c34610d29ed20dc07212a27244646f52089cb1fa7c4f902f6b2bde8818c";
@@ -86,7 +104,7 @@ async function fetchTimeline(
         name: string;
         value: { value: unknown };
       }>;
-      for (const e of arr) decoded[e.name] = e.value?.value;
+      for (const e of arr) decoded[e.name] = unwrapDecoded(e.value?.value);
     } catch {
       /* ignore */
     }
@@ -397,13 +415,22 @@ export function VerifyClient() {
                         </>
                       ) : null}
                       {gh === "ok" && (
-                        <span className="pill ok"> in GitHub</span>
+                        <>
+                          {" "}
+                          <span className="pill ok">in GitHub</span>
+                        </>
                       )}
                       {gh === "missing" && (
-                        <span className="pill bad"> not in GitHub</span>
+                        <>
+                          {" "}
+                          <span className="pill bad">not in GitHub</span>
+                        </>
                       )}
                       {gh === "checking" && (
-                        <span className="pill"> checking GitHub...</span>
+                        <>
+                          {" "}
+                          <span className="pill">checking GitHub...</span>
+                        </>
                       )}
                     </div>
                     <div className="meta links">
