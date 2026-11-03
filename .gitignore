@@ -13,3 +13,5 @@ coverage/
 packages/web/out/
 packages/web/.next/
 packages/cli/dist/
+live-check.png
+out-live-check.png
