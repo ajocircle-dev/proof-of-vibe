@@ -1,5 +1,5 @@
 /**
- * Cloudflare Pages Function: GET /badge?repo=owner/name
+ * Cloudflare Pages Function: GET|HEAD /badge?repo=owner/name
  * Returns a live SVG badge with attested commit count from easscan GraphQL.
  */
 
@@ -49,6 +49,16 @@ function badgeSvg(count: number): string {
 </svg>`;
 }
 
+function svgHeaders(extra: Record<string, string> = {}): HeadersInit {
+  return {
+    "content-type": "image/svg+xml; charset=utf-8",
+    "cache-control": "public, max-age=60",
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, HEAD, OPTIONS",
+    ...extra,
+  };
+}
+
 async function countForRepo(repo: string): Promise<number> {
   const query = `
     query($schemaId: String!) {
@@ -89,30 +99,44 @@ async function countForRepo(repo: string): Promise<number> {
   return n;
 }
 
-export const onRequestGet: PagesFunction = async (context) => {
-  const url = new URL(context.request.url);
+async function handleBadge(request: Request): Promise<Response> {
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: svgHeaders() });
+  }
+  const url = new URL(request.url);
   const repo = normalizeRepo(url.searchParams.get("repo") || DEFAULT_REPO);
+  const isHead = request.method === "HEAD";
   try {
     const count = await countForRepo(repo);
-    return new Response(badgeSvg(count), {
+    const body = badgeSvg(count);
+    return new Response(isHead ? null : body, {
+      status: 200,
       headers: {
-        "content-type": "image/svg+xml; charset=utf-8",
-        "cache-control": "public, max-age=60",
-        "access-control-allow-origin": "*",
+        ...svgHeaders(),
+        "content-length": String(new TextEncoder().encode(body).length),
       },
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    return new Response(badgeSvg(0).replace(
-      "0 attested commits",
-      "error",
-    ), {
+    const body = badgeSvg(0).replace("0 attested commits", "error");
+    return new Response(isHead ? null : body, {
       status: 200,
       headers: {
-        "content-type": "image/svg+xml; charset=utf-8",
-        "x-pov-error": msg.slice(0, 120),
-        "cache-control": "no-store",
+        ...svgHeaders({
+          "x-pov-error": msg.slice(0, 120),
+          "cache-control": "no-store",
+        }),
+        "content-length": String(new TextEncoder().encode(body).length),
       },
     });
   }
-};
+}
+
+export const onRequestGet: PagesFunction = async (context) =>
+  handleBadge(context.request);
+
+export const onRequestHead: PagesFunction = async (context) =>
+  handleBadge(context.request);
+
+export const onRequestOptions: PagesFunction = async (context) =>
+  handleBadge(context.request);

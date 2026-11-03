@@ -107,11 +107,20 @@ export function AttestForm() {
     try {
       setStep("signing");
       setStatus("Confirm register() in your wallet (you pay testnet gas)…");
-      const { txHash: hash } = await registerAgentWithWallet(agentUri.trim());
-      setTxHash(hash);
-      setStatus(
-        `Register tx submitted: ${hash}. After confirmation, read agentId from the Registered event on basescan, then paste it below.`,
+      const { txHash: hash, agentId: newId } = await registerAgentWithWallet(
+        agentUri.trim(),
       );
+      setTxHash(hash);
+      if (newId != null) {
+        setAgentId(newId.toString());
+        setStatus(
+          `Registered agentId ${newId.toString()}. Tx ${hash.slice(0, 10)}… Auto-filled below.`,
+        );
+      } else {
+        setStatus(
+          `Register tx confirmed (${hash.slice(0, 10)}…). Could not decode agentId from logs; check basescan and paste it below.`,
+        );
+      }
       setStep("form");
     } catch (e) {
       setStep("error");

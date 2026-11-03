@@ -1,7 +1,9 @@
 import {
+  createPublicClient,
   createWalletClient,
   custom,
   encodeAbiParameters,
+  http,
   parseAbiParameters,
   type Hex,
   type Address,
@@ -11,12 +13,14 @@ import {
   AGENT_REGISTRY_CAIP,
   BASE_SEPOLIA_PARAMS,
   CHAIN_ID,
+  DEFAULT_RPC,
   EAS_ADDRESS,
   IDENTITY_REGISTRY,
   SCHEMA,
   SCHEMA_UID,
 } from "./constants";
 import { sha1ToBytes32 } from "./decode";
+import { decodeAgentIdFromLogs } from "./agent-id";
 
 export type EthereumProvider = {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
@@ -183,7 +187,7 @@ export async function attestWithWallet(
 
 export async function registerAgentWithWallet(
   agentUri: string,
-): Promise<{ txHash: Hex }> {
+): Promise<{ txHash: Hex; agentId: bigint | null }> {
   const provider = getInjectedProvider();
   if (!provider) throw new Error("No injected wallet");
   await ensureBaseSepolia(provider);
@@ -193,6 +197,10 @@ export async function registerAgentWithWallet(
     chain: baseSepolia,
     transport: custom(provider as never),
   });
+  const publicClient = createPublicClient({
+    chain: baseSepolia,
+    transport: http(DEFAULT_RPC),
+  });
   const hash = await walletClient.writeContract({
     address: IDENTITY_REGISTRY,
     abi: registryAbi,
@@ -201,5 +209,7 @@ export async function registerAgentWithWallet(
     account,
     chain: baseSepolia,
   });
-  return { txHash: hash };
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  const agentId = decodeAgentIdFromLogs(receipt.logs, IDENTITY_REGISTRY);
+  return { txHash: hash, agentId };
 }
