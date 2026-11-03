@@ -45,7 +45,7 @@ export function ShareBadge({ initialRepo }: { initialRepo: string }) {
         </a>
       </p>
       <label>Markdown</label>
-      <pre className="snippet">{md}</pre>
+      <pre className="snippet snippet-scroll">{md}</pre>
       <div className="btn-row">
         <button type="button" onClick={() => copy("md", md)}>
           {copied === "md" ? "Copied" : "Copy Markdown"}
