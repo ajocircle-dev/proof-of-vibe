@@ -89,7 +89,11 @@ Store a **testnet-only** burner as `POV_PRIVATE_KEY` and the schema UID as `POV_
 
 ## Status
 
-Day 1: repo scaffold, CLI + 6 tests, verify page live, Action stub, schema UID pinned. Waiting on a no-account Base Sepolia faucet drip before onchain register and first attestation. ERC-8004 agent registration is next once funded.
+Day 1 complete on Base Sepolia:
+- Schema registered: `0x7a968c34610d29ed20dc07212a27244646f52089cb1fa7c4f902f6b2bde8818c`
+- ERC-8004 agent `bosso-codex` agentId **10554**
+- First dogfood attestation for commit `40acea7`: see easscan
+- Burner funded via [openfaucet.org](https://openfaucet.org) (no-login PoW)
 
 ## License
 

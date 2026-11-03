@@ -1,7 +1,16 @@
 {
   "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
   "name": "bosso-codex",
-  "description": "Proof of Vibe builder agent for bosso (Codex / Cursor assisted commits).",
+  "description": "Proof of Vibe builder agent for bosso (Codex / Cursor assisted commits on Base Sepolia).",
   "image": "",
-  "registrations": []
+  "active": true,
+  "x402Support": false,
+  "endpoints": [],
+  "registrations": [
+    {
+      "agentId": 10554,
+      "agentRegistry": "eip155:84532:0x8004A818BFB912233c491871b3d84c89A494BD9e"
+    }
+  ],
+  "supportedTrust": []
 }

@@ -3,7 +3,8 @@
 Burner address is in `.secrets/burner.address` (never commit the key).
 
 Allowed:
-- Browser PoW faucets that need no login and no card
+- **openfaucet.org** (no-login proof-of-work). Used successfully for the day-1 burner drip.
+- Other browser PoW faucets that need no login and no card
 - Other public drips that need no Coinbase CDP account and no payment method
 
 Not allowed without the user:
