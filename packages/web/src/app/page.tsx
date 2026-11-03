@@ -1,3 +1,5 @@
+import { LiveStatsBar } from "../components/live-stats";
+import { ShareBadge } from "../components/share-badge";
 import { VerifyClient } from "./verify-client";
 
 export default function HomePage() {
@@ -6,47 +8,65 @@ export default function HomePage() {
       <section className="hero">
         <p className="badge">Base Sepolia · EAS · ERC-8004</p>
         <h1>Proof of Vibe</h1>
-        <p>
-          Onchain provenance for AI-built apps. Each commit can carry an EAS
-          attestation naming the ERC-8004 agent, the commit and tree hashes, a
-          session commitment, and the builder. Verify any repo timeline below.
+        <p className="lead">
+          Onchain provenance for AI-built commits. Attest a repo once, share a
+          live badge, and grow a public trail judges can verify in seconds.
         </p>
-        <p className="meta">
-          <a href="/badge.svg">
-            <img
-              src="/badge.svg"
-              alt="Proof of Vibe attestation badge"
-              height={20}
-            />
+        <p className="cta-row">
+          <a className="btn-primary-link" href="/attest/">
+            Attest your repo
+          </a>
+          <a className="btn-link" href="#verify">
+            Verify a timeline
+          </a>
+          <a className="btn-link" href="#share">
+            Get a badge
           </a>
         </p>
+        <LiveStatsBar />
       </section>
 
       <div className="warn">
         An attestation is a signed claim by the builder, not cryptographic proof
-        that an agent wrote the code. Treat session and artifact hashes as
-        commitments the builder can reveal later.
+        that an agent wrote the code. Counts below are read live from Base
+        Sepolia via easscan GraphQL. No invented traction.
       </div>
+
+      <section className="card why">
+        <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>
+          Why it matters for AI-built code
+        </h2>
+        <ul className="why-list">
+          <li>
+            <strong>Named agent.</strong> Each attestation can point at an
+            ERC-8004 agent id plus the tool and builder.
+          </li>
+          <li>
+            <strong>Commit + tree pinned.</strong> Git SHA-1 values are packed
+            onchain so anyone can cross-check GitHub.
+          </li>
+          <li>
+            <strong>Reason to return.</strong> Per-repo timelines and streaks
+            grow as you keep shipping attested commits.
+          </li>
+        </ul>
+      </section>
 
       <VerifyClient />
 
+      <div style={{ height: "1rem" }} />
+      <ShareBadge initialRepo="ajocircle-dev/proof-of-vibe" />
+
       <section className="card" style={{ marginTop: "1.5rem" }}>
         <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>How it works</h2>
-        <ol
-          style={{
-            color: "var(--muted)",
-            lineHeight: 1.6,
-            paddingLeft: "1.2rem",
-          }}
-        >
+        <ol className="steps">
           <li>Register the ProofOfVibe v1 EAS schema once on Base Sepolia.</li>
           <li>
-            Run <code>pov attest</code> (or the GitHub Action) after each
-            commit.
+            Attest from the web wallet flow, the <code>pov</code> CLI, or the
+            GitHub Action after each commit (you pay testnet gas).
           </li>
           <li>
-            Open this page with a GitHub repo (optional{" "}
-            <code>?uid=0x...</code>) to see the attested timeline.
+            Share the live badge and verify page so others can audit the trail.
           </li>
         </ol>
         <p className="meta">
@@ -54,6 +74,8 @@ export default function HomePage() {
           <a href="https://github.com/ajocircle-dev/proof-of-vibe">
             ajocircle-dev/proof-of-vibe
           </a>
+          {" · "}
+          <a href="/attest/">Start attesting</a>
         </p>
       </section>
 

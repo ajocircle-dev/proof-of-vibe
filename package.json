@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "npm run build -w @pov/cli && npm run web:build",
-    "test": "npm run test -w @pov/cli",
+    "test": "npm run test -w @pov/cli && npm run test -w @pov/web",
     "cli": "npm run pov -w @pov/cli --",
     "register-schema": "npm run register-schema -w @pov/cli --",
     "web:dev": "npm run dev -w @pov/web",

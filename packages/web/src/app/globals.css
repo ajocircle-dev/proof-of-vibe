@@ -149,3 +149,94 @@ button:disabled {
 }
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .links { margin-top: 0.25rem; }
+
+.lead {
+  font-size: 1.15rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0 0 1.25rem;
+  max-width: 40rem;
+}
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin: 0 0 1.5rem;
+}
+.btn-primary-link {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff !important;
+  text-decoration: none !important;
+  border-radius: 8px;
+  padding: 0.65rem 1.1rem;
+  font-weight: 600;
+}
+.btn-primary-link:hover { filter: brightness(1.08); }
+.btn-link {
+  display: inline-block;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text) !important;
+  text-decoration: none !important;
+  font-size: 0.95rem;
+}
+.btn-link:hover { border-color: var(--accent); }
+.btn-secondary {
+  background: transparent !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.65rem;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin: 0.5rem 0 0;
+}
+.stat {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 0.9rem;
+}
+.stat-n {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.stat-l {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
+}
+.why-list, .steps {
+  color: var(--muted);
+  line-height: 1.6;
+  padding-left: 1.2rem;
+  margin: 0.35rem 0 0;
+}
+.why-list strong { color: var(--text); }
+.snippet {
+  background: #0a0e14;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  overflow-x: auto;
+  font-size: 0.78rem;
+  color: #c5d0e0;
+  white-space: pre-wrap;
+}
+.ok-line {
+  color: var(--ok);
+  margin-top: 0.75rem;
+  font-weight: 600;
+}

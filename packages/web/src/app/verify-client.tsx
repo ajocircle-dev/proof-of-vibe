@@ -1,126 +1,26 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
-type TimelineItem = {
-  uid: string;
-  time: number;
-  attester: string;
-  txid: string;
-  decoded: Record<string, unknown>;
-};
+import {
+  DEFAULT_AGENT_ID,
+  DEFAULT_RPC,
+  IDENTITY_REGISTRY,
+  SCHEMA_UID,
+} from "../lib/constants";
+import { bytes32ToGitSha, normalizeRepo, shortSha } from "../lib/decode";
+import {
+  fetchTimeline,
+  streakDays,
+  type TimelineItem,
+} from "../lib/eas-query";
 
 type AgentCard = {
   name?: string;
   description?: string;
   image?: string;
   active?: boolean;
-  registrations?: Array<{ agentId: number; agentRegistry: string }>;
   tokenUri: string;
 };
-
-
-/** easscan packs uint256 as { type: "BigNumber", hex: "0x..." }. */
-function unwrapDecoded(value: unknown): unknown {
-  if (
-    value &&
-    typeof value === "object" &&
-    "hex" in (value as { hex?: string }) &&
-    (value as { type?: string }).type === "BigNumber"
-  ) {
-    try {
-      return BigInt((value as { hex: string }).hex).toString();
-    } catch {
-      return value;
-    }
-  }
-  return value;
-}
-
-const DEFAULT_SCHEMA =
-  process.env.NEXT_PUBLIC_POV_SCHEMA_UID ||
-  "0x7a968c34610d29ed20dc07212a27244646f52089cb1fa7c4f902f6b2bde8818c";
-const GRAPHQL =
-  process.env.NEXT_PUBLIC_EASSCAN_GRAPHQL ||
-  "https://base-sepolia.easscan.org/graphql";
-const IDENTITY_REGISTRY = "0x8004A818BFB912233c491871b3d84c89A494BD9e";
-const DEFAULT_AGENT_ID = 10554;
-const DEFAULT_RPC =
-  process.env.NEXT_PUBLIC_POV_RPC_URL || "https://sepolia.base.org";
-
-function normalizeRepo(input: string): string {
-  let s = input.trim();
-  const m = s.match(/github\.com\/([^/]+\/[^/#?]+)/);
-  if (m) s = m[1]!;
-  return s.replace(/\.git$/, "").replace(/\/$/, "");
-}
-
-/** Left-aligned git SHA-1 inside bytes32 (or already a short hex). */
-export function bytes32ToGitSha(value: unknown): string {
-  const raw = String(value || "");
-  if (!raw) return "";
-  const hex = (raw.startsWith("0x") ? raw.slice(2) : raw).toLowerCase();
-  if (/^[0-9a-f]{40}/.test(hex)) return hex.slice(0, 40);
-  // easscan sometimes returns { type: "BigNumber", hex: "0x..." } style as stringified
-  return hex.replace(/0+$/, "").slice(0, 40) || hex.slice(0, 40);
-}
-
-function shortSha(sha: string): string {
-  return sha ? sha.slice(0, 7) : "?";
-}
-
-async function fetchTimeline(
-  schemaUid: string,
-  repo: string,
-): Promise<TimelineItem[]> {
-  const query = `
-    query($schemaId: String!) {
-      attestations(
-        where: { schemaId: { equals: $schemaId }, revoked: { equals: false } }
-        orderBy: [{ time: desc }]
-        take: 100
-      ) {
-        id
-        attester
-        time
-        txid
-        decodedDataJson
-      }
-    }
-  `;
-  const res = await fetch(GRAPHQL, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ query, variables: { schemaId: schemaUid } }),
-  });
-  if (!res.ok) throw new Error(`GraphQL HTTP ${res.status}`);
-  const body = await res.json();
-  if (body.errors) throw new Error(JSON.stringify(body.errors));
-  const out: TimelineItem[] = [];
-  for (const a of body.data?.attestations || []) {
-    let decoded: Record<string, unknown> = {};
-    try {
-      const arr = JSON.parse(a.decodedDataJson) as Array<{
-        name: string;
-        value: { value: unknown };
-      }>;
-      for (const e of arr) decoded[e.name] = unwrapDecoded(e.value?.value);
-    } catch {
-      /* ignore */
-    }
-    const repoVal = String(decoded.repo || "");
-    if (repoVal === repo || repoVal.includes(repo)) {
-      out.push({
-        uid: a.id,
-        time: a.time,
-        attester: a.attester,
-        txid: a.txid || "",
-        decoded,
-      });
-    }
-  }
-  return out;
-}
 
 function decodeAbiString(hex: string): string {
   const h = hex.startsWith("0x") ? hex.slice(2) : hex;
@@ -135,7 +35,6 @@ function decodeAbiString(hex: string): string {
 }
 
 async function readTokenUri(agentId: number): Promise<string> {
-  // tokenURI(uint256) selector = 0xc87b56dd
   const data =
     "0xc87b56dd" + BigInt(agentId).toString(16).padStart(64, "0");
   const res = await fetch(DEFAULT_RPC, {
@@ -191,14 +90,14 @@ function readQuery(): { repo: string; uid: string; schema: string } {
     return {
       repo: "ajocircle-dev/proof-of-vibe",
       uid: "",
-      schema: DEFAULT_SCHEMA,
+      schema: SCHEMA_UID,
     };
   }
   const sp = new URLSearchParams(window.location.search);
   return {
     repo: sp.get("repo") || "ajocircle-dev/proof-of-vibe",
     uid: (sp.get("uid") || sp.get("attestation") || "").toLowerCase(),
-    schema: sp.get("schema") || DEFAULT_SCHEMA,
+    schema: sp.get("schema") || SCHEMA_UID,
   };
 }
 
@@ -217,22 +116,20 @@ export function VerifyClient() {
   >({});
 
   const repo = useMemo(() => normalizeRepo(repoInput), [repoInput]);
+  const streak = items ? streakDays(items) : 0;
 
   async function onVerify(nextRepo = repo, nextSchema = schemaUid) {
     setError(null);
     setItems(null);
     setGhStatus({});
     if (!nextSchema) {
-      setError(
-        "Set a schema UID (register once with: pov register-schema), then paste it here.",
-      );
+      setError("Set a schema UID.");
       return;
     }
     setLoading(true);
     try {
       const list = await fetchTimeline(nextSchema, nextRepo);
       setItems(list);
-      // Cross-check attested commits against GitHub (best effort).
       for (const it of list) {
         const sha = bytes32ToGitSha(it.decoded.commitSha);
         if (!sha) continue;
@@ -267,7 +164,7 @@ export function VerifyClient() {
     <>
       <section className="card agent-card">
         <h2 style={{ marginTop: 0, fontSize: "1.05rem" }}>
-          ERC-8004 agent card
+          ERC-8004 agent card (dogfood)
         </h2>
         {agentError && (
           <p className="meta" style={{ color: "#f0a0a0" }}>
@@ -304,7 +201,10 @@ export function VerifyClient() {
         )}
       </section>
 
-      <section className="card">
+      <section className="card" id="verify">
+        <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>
+          Verify timeline
+        </h2>
         <label htmlFor="repo">GitHub repo or URL</label>
         <input
           id="repo"
@@ -349,8 +249,8 @@ export function VerifyClient() {
 
         {items && items.length === 0 && (
           <p className="meta" style={{ marginTop: "1rem" }}>
-            No attestations found for <strong>{repo}</strong> yet. Dogfood with{" "}
-            <code>pov attest</code> after the schema is registered.
+            No attestations found for <strong>{repo}</strong> yet.{" "}
+            <a href="/attest/">Attest a commit</a> to start the trail.
           </p>
         )}
 
@@ -359,6 +259,7 @@ export function VerifyClient() {
             <p className="meta" style={{ marginTop: "1rem" }}>
               {items.length} attestation{items.length === 1 ? "" : "s"} for{" "}
               {repo}
+              {streak > 0 ? ` · ${streak}-day streak` : ""}
             </p>
             <ul className="timeline">
               {items.map((it) => {
