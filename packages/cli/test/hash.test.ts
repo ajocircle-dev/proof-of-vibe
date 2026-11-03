@@ -9,7 +9,7 @@ import {
   sha256File,
   zeroBytes32,
 } from "../src/hash.js";
-import { sha1ToBytes32 } from "../src/git.js";
+import { sha1ToBytes32, bytes32ToGitSha } from "../src/git.js";
 import { encodeSchemaData } from "../src/eas.js";
 import { SCHEMA } from "../src/constants.js";
 
@@ -22,6 +22,14 @@ describe("sha1ToBytes32", () => {
   });
   it("rejects short input", () => {
     assert.throws(() => sha1ToBytes32("abc"));
+  });
+});
+
+
+describe("bytes32ToGitSha", () => {
+  it("round-trips with sha1ToBytes32", () => {
+    const sha = "40acea7c0123456789abcdef0123456789abcdef";
+    assert.equal(bytes32ToGitSha(sha1ToBytes32(sha)), sha);
   });
 });
 

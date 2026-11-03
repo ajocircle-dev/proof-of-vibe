@@ -1,5 +1,7 @@
 # Proof of Vibe
 
+[![Proof of Vibe](https://proof-of-vibe.pages.dev/badge.svg)](https://proof-of-vibe.pages.dev)
+
 Onchain provenance trail for AI-built apps.
 
 Each commit (or release) can get an [EAS](https://attest.org) attestation on **Base Sepolia**. The attestation names the [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) agent that helped write the code, the commit and tree hashes, a hash of the agent session, and the builder. A small CLI and GitHub Action post the attestations. A public verify page turns them into a timeline.
@@ -7,6 +9,8 @@ Each commit (or release) can get an [EAS](https://attest.org) attestation on **B
 Builder: **bosso**. Network: **Base Sepolia (84532) only**. No mainnet funds.
 
 Live verify page: https://proof-of-vibe.pages.dev
+
+Badge SVG: https://proof-of-vibe.pages.dev/badge.svg
 
 ## Honesty limit
 
@@ -27,6 +31,7 @@ git repo  --(pov CLI / GH Action)-->  EAS.attest() on Base Sepolia
 - EAS predeploy: `0x4200000000000000000000000000000000000021`
 - SchemaRegistry: `0x4200000000000000000000000000000000000020`
 - ERC-8004 IdentityRegistry: `0x8004A818BFB912233c491871b3d84c89A494BD9e`
+- Agent: `bosso-codex` (agentId **10554**), tokenURI served from `/.well-known/agent-registration.json`
 
 ## Schema (ProofOfVibe v1)
 
@@ -42,8 +47,6 @@ Deterministic schema UID (keccak256 of encodePacked schema + zero resolver + rev
 
 `refUID` chains attestations for the same repo into a timeline. `commitSha` / `treeSha` are git SHA-1 values left-aligned in `bytes32`.
 
-Onchain `register` still needs a funded Base Sepolia burner. Until then attestations cannot be posted, but the UID is fixed.
-
 ## Quick start
 
 ```bash
@@ -54,6 +57,7 @@ npm test
 npx tsx packages/cli/src/index.ts init \
   --repo ajocircle-dev/proof-of-vibe \
   --app-url https://proof-of-vibe.pages.dev \
+  --agent-id 10554 \
   --agent-tool Codex
 
 # Fund a testnet burner (no-account faucet only), then:
@@ -73,6 +77,7 @@ Private key: set `POV_PRIVATE_KEY`, or keep a chmod 600 file at `.secrets/burner
 | `packages/cli` | `pov` CLI: init, attest, verify, register-schema |
 | `packages/action` | Composite GitHub Action |
 | `packages/web` | Static Next.js verify page |
+| `scripts/generate-badge.mjs` | Build-time badge SVG (`Proof of Vibe: N attested commits`) |
 | `.secrets/` | Local burner key only (gitignored, chmod 600) |
 
 ## Verify page
@@ -83,16 +88,18 @@ npx -p node@22 -p wrangler wrangler pages deploy packages/web/out \
   --project-name proof-of-vibe --branch main
 ```
 
+Deep link a single attestation with `?uid=0x...` (and optional `?repo=owner/name`).
+
 ## GitHub Action
 
-Store a **testnet-only** burner as `POV_PRIVATE_KEY` and the schema UID as `POV_SCHEMA_UID`. See `.github/workflows/attest.yml`.
+Store a **testnet-only** burner as `POV_PRIVATE_KEY` and the schema UID as `POV_SCHEMA_UID`. The workflow at `.github/workflows/attest.yml` runs on every push to `main`, attests HEAD with agentId 10554 from `.pov.json`, and skips cleanly when secrets are missing or the run is on a fork.
 
 ## Status
 
-Day 1 complete on Base Sepolia:
+Base Sepolia dogfood:
 - Schema registered: `0x7a968c34610d29ed20dc07212a27244646f52089cb1fa7c4f902f6b2bde8818c`
 - ERC-8004 agent `bosso-codex` agentId **10554**
-- First dogfood attestation for commit `40acea7`: see easscan
+- GitHub Action auto-attest enabled on `main`
 - Burner funded via [openfaucet.org](https://openfaucet.org) (no-login PoW)
 
 ## License

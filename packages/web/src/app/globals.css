@@ -119,3 +119,33 @@ button:disabled {
   font-size: 0.9rem;
   margin: 1rem 0;
 }
+
+.agent-card h2 { color: var(--text); }
+.timeline li.highlight {
+  background: #1a2740;
+  border-radius: 8px;
+  padding-right: 0.75rem;
+  border-left-color: var(--accent);
+}
+.timeline li.highlight::before { background: var(--accent); }
+.pill {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.pill.ok {
+  background: #163524;
+  border-color: #27553a;
+  color: var(--ok);
+}
+.pill.bad {
+  background: #3a1616;
+  border-color: #5a2727;
+  color: #f0a0a0;
+}
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.links { margin-top: 0.25rem; }

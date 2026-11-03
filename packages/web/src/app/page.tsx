@@ -4,12 +4,21 @@ export default function HomePage() {
   return (
     <main>
       <section className="hero">
-        <p className="badge">Base Sepolia · EAS</p>
+        <p className="badge">Base Sepolia · EAS · ERC-8004</p>
         <h1>Proof of Vibe</h1>
         <p>
           Onchain provenance for AI-built apps. Each commit can carry an EAS
           attestation naming the ERC-8004 agent, the commit and tree hashes, a
           session commitment, and the builder. Verify any repo timeline below.
+        </p>
+        <p className="meta">
+          <a href="/badge.svg">
+            <img
+              src="/badge.svg"
+              alt="Proof of Vibe attestation badge"
+              height={20}
+            />
+          </a>
         </p>
       </section>
 
@@ -23,12 +32,22 @@ export default function HomePage() {
 
       <section className="card" style={{ marginTop: "1.5rem" }}>
         <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>How it works</h2>
-        <ol style={{ color: "var(--muted)", lineHeight: 1.6, paddingLeft: "1.2rem" }}>
+        <ol
+          style={{
+            color: "var(--muted)",
+            lineHeight: 1.6,
+            paddingLeft: "1.2rem",
+          }}
+        >
           <li>Register the ProofOfVibe v1 EAS schema once on Base Sepolia.</li>
           <li>
-            Run <code>pov attest</code> (or the GitHub Action) after each commit.
+            Run <code>pov attest</code> (or the GitHub Action) after each
+            commit.
           </li>
-          <li>Open this page with a GitHub repo to see the attested timeline.</li>
+          <li>
+            Open this page with a GitHub repo (optional{" "}
+            <code>?uid=0x...</code>) to see the attested timeline.
+          </li>
         </ol>
         <p className="meta">
           Builder: bosso · Repo:{" "}

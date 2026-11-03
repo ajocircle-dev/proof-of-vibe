@@ -8,12 +8,13 @@
     "packages/web"
   ],
   "scripts": {
-    "build": "npm run build -w @pov/cli && npm run build -w @pov/web",
+    "build": "npm run build -w @pov/cli && npm run web:build",
     "test": "npm run test -w @pov/cli",
     "cli": "npm run pov -w @pov/cli --",
     "register-schema": "npm run register-schema -w @pov/cli --",
     "web:dev": "npm run dev -w @pov/web",
-    "web:build": "npm run build -w @pov/web"
+    "web:build": "npm run badge && npm run build -w @pov/web",
+    "badge": "node scripts/generate-badge.mjs"
   },
   "engines": {
     "node": ">=20"
