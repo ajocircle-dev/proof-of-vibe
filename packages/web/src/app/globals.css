@@ -1,0 +1,121 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b0f14;
+  --panel: #121821;
+  --text: #e8eef7;
+  --muted: #8b9bb4;
+  --accent: #5b8cff;
+  --ok: #3dd68c;
+  --border: #243044;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100%;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+.hero h1 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+.hero p {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0 0 1.5rem;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+input[type="text"] {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #0a0e14;
+  color: var(--text);
+  font-size: 1rem;
+}
+button {
+  margin-top: 0.75rem;
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.65rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.meta {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.timeline li {
+  border-left: 2px solid var(--border);
+  padding: 0 0 1rem 1rem;
+  margin-left: 0.35rem;
+  position: relative;
+}
+.timeline li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--ok);
+  border-radius: 50%;
+  position: absolute;
+  left: -5px;
+  top: 0.35rem;
+}
+.badge {
+  display: inline-block;
+  background: #163524;
+  color: var(--ok);
+  border: 1px solid #27553a;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.footer {
+  margin-top: 2.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.warn {
+  background: #2a1f0a;
+  border: 1px solid #5a4318;
+  color: #f0d9a0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}

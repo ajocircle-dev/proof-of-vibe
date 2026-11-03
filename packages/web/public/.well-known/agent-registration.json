@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "bosso-codex",
+  "description": "Proof of Vibe builder agent for bosso (Codex / Cursor assisted commits).",
+  "image": "",
+  "registrations": []
+}

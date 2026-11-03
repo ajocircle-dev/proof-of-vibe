@@ -1,0 +1,20 @@
+name: Proof of Vibe attest
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.POV_PRIVATE_KEY != '' && secrets.POV_SCHEMA_UID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - name: Attest HEAD
+        env:
+          POV_PRIVATE_KEY: ${{ secrets.POV_PRIVATE_KEY }}
+          POV_SCHEMA_UID: ${{ secrets.POV_SCHEMA_UID }}
+        run: npx --yes tsx packages/cli/src/index.ts attest

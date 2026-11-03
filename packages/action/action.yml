@@ -1,0 +1,44 @@
+name: Proof of Vibe
+description: Attest the current commit on Base Sepolia via EAS (Proof of Vibe).
+author: ajocircle-dev
+branding:
+  icon: shield
+  color: blue
+inputs:
+  private-key:
+    description: Testnet-only burner private key (POV_PRIVATE_KEY secret).
+    required: true
+  schema-uid:
+    description: EAS schema UID for ProofOfVibe v1.
+    required: true
+  session:
+    description: Optional agent session id (hashed onchain, never stored raw).
+    required: false
+    default: ""
+  rpc-url:
+    description: Base Sepolia RPC URL.
+    required: false
+    default: "https://sepolia.base.org"
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+    - name: Install and attest
+      shell: bash
+      env:
+        POV_PRIVATE_KEY: ${{ inputs.private-key }}
+        POV_SCHEMA_UID: ${{ inputs.schema-uid }}
+        POV_RPC_URL: ${{ inputs.rpc-url }}
+      run: |
+        ROOT="${{ github.action_path }}/../.."
+        if [ ! -f "$ROOT/package.json" ]; then ROOT="${{ github.workspace }}"; fi
+        cd "$ROOT"
+        npm install
+        EXTRA=()
+        if [ -n "${{ inputs.session }}" ]; then
+          EXTRA+=(--session "${{ inputs.session }}")
+        fi
+        npx --yes tsx packages/cli/src/index.ts attest "${EXTRA[@]}"

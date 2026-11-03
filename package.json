@@ -1,0 +1,22 @@
+{
+  "name": "proof-of-vibe",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Onchain provenance trail for AI-built apps via EAS on Base Sepolia",
+  "workspaces": [
+    "packages/cli",
+    "packages/web"
+  ],
+  "scripts": {
+    "build": "npm run build -w @pov/cli && npm run build -w @pov/web",
+    "test": "npm run test -w @pov/cli",
+    "cli": "npm run pov -w @pov/cli --",
+    "register-schema": "npm run register-schema -w @pov/cli --",
+    "web:dev": "npm run dev -w @pov/web",
+    "web:build": "npm run build -w @pov/web"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
