@@ -1,0 +1,10 @@
+{
+  "repo": "ajocircle-dev/proof-of-vibe",
+  "appUrl": "https://proof-of-vibe.pages.dev",
+  "agentRegistry": "eip155:84532:0x8004A818BFB912233c491871b3d84c89A494BD9e",
+  "agentId": "10554",
+  "agentTool": "Codex",
+  "builderName": "bosso",
+  "schemaUid": "0x7a968c34610d29ed20dc07212a27244646f52089cb1fa7c4f902f6b2bde8818c",
+  "chainId": 84532
+}

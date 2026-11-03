@@ -6,15 +6,31 @@ on:
 jobs:
   attest:
     runs-on: ubuntu-latest
-    if: ${{ secrets.POV_PRIVATE_KEY != '' && secrets.POV_SCHEMA_UID != '' }}
+    # Canonical repo only. Forks skip cleanly (no burner secrets expected).
+    if: github.repository == 'ajocircle-dev/proof-of-vibe'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: npm install
-      - name: Attest HEAD
+      - name: Check secrets
+        id: prep
         env:
           POV_PRIVATE_KEY: ${{ secrets.POV_PRIVATE_KEY }}
           POV_SCHEMA_UID: ${{ secrets.POV_SCHEMA_UID }}
-        run: npx --yes tsx packages/cli/src/index.ts attest
+        run: |
+          if [ -z "$POV_PRIVATE_KEY" ] || [ -z "$POV_SCHEMA_UID" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Secrets missing; skipping attest."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install
+        if: steps.prep.outputs.ready == 'true'
+        run: npm install
+      - name: Attest HEAD
+        if: steps.prep.outputs.ready == 'true'
+        env:
+          POV_PRIVATE_KEY: ${{ secrets.POV_PRIVATE_KEY }}
+          POV_SCHEMA_UID: ${{ secrets.POV_SCHEMA_UID }}
+        run: npx --yes tsx packages/cli/src/index.ts attest --schema-uid "$POV_SCHEMA_UID"

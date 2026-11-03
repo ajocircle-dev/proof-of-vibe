@@ -8,7 +8,6 @@ out/
 .env.local
 .secrets/
 *.key
-.pov.json
 coverage/
 .DS_Store
 packages/web/out/
