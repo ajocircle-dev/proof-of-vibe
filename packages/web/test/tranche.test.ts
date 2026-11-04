@@ -86,3 +86,15 @@ describe("groupAgents", () => {
     assert.equal(formatAgentGroup(g[1]!), "#7 (Cursor)");
   });
 });
+
+import { shareText } from "../src/lib/share.ts";
+describe("shareText", () => {
+  it("tags @vibestarterxyz and fits X length", () => {
+    for (const k of ["landing", "verify", "tranche"] as const) {
+      const t = shareText("ajocircle-dev/proof-of-vibe", k);
+      assert.ok(t.includes("@vibestarterxyz"));
+      const len = t.replace(/https?:\/\/\S+/g, "x".repeat(23)).length;
+      assert.ok(len <= 280, `${k} ${len}`);
+    }
+  });
+});
