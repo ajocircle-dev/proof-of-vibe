@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { APP_URL } from "../lib/constants";
 import { markdownBadge } from "../lib/badge-svg";
 import { normalizeRepo } from "../lib/decode";
+import { shareText } from "../lib/share";
+import { ShareOnX } from "./share-x";
 
 export function ShareBadge({ initialRepo }: { initialRepo: string }) {
   const [repoInput, setRepoInput] = useState(initialRepo);
@@ -25,11 +27,18 @@ export function ShareBadge({ initialRepo }: { initialRepo: string }) {
 
   return (
     <section className="card" id="share">
-      <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Shareable badge</h2>
+      <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Add your badge</h2>
       <p className="meta">
-        Live SVG from easscan GraphQL. Come back to watch the attested commit
-        streak grow for any public repo.
+        For any Vibeathon team. Free, testnet only, no signup.
       </p>
+      <ol className="steps">
+        <li>Type your public GitHub repo below.</li>
+        <li>Copy the Markdown into your README.</li>
+        <li>
+          Attest commits with the <a href="/attest/#action">GitHub Action</a>{" "}
+          or the <a href="/attest/">wallet flow</a>. The badge updates live.
+        </li>
+      </ol>
       <label htmlFor="badge-repo">GitHub repo</label>
       <input
         id="badge-repo"
@@ -60,6 +69,7 @@ export function ShareBadge({ initialRepo }: { initialRepo: string }) {
         <a className="btn-link" href={verifyUrl}>
           Open verify page
         </a>
+        <ShareOnX text={shareText(repo, "verify")} />
       </div>
     </section>
   );

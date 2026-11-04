@@ -13,6 +13,8 @@ import {
   streakDays,
   type TimelineItem,
 } from "../lib/eas-query";
+import { shareText } from "../lib/share";
+import { ShareOnX } from "../components/share-x";
 
 type AgentCard = {
   name?: string;
@@ -240,6 +242,12 @@ export function VerifyClient() {
         >
           {loading ? "Loading..." : "Verify"}
         </button>
+        <div className="btn-row" style={{ marginTop: "0.6rem" }}>
+          <ShareOnX text={shareText(repo, "verify")} />
+          <a className="btn-link" href={`/tranche/?repo=${encodeURIComponent(repo)}`}>
+            Tranche evidence
+          </a>
+        </div>
 
         {error && (
           <p style={{ color: "#f0a0a0", marginTop: "1rem" }} role="alert">

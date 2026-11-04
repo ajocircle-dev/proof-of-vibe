@@ -381,3 +381,42 @@ a.copy-row-value { color: var(--accent); }
     font-size: 0.75rem;
   }
 }
+
+/* v2: pitch, X share, tranche panel */
+.pitch { font-size: 1.2rem; line-height: 1.45; font-weight: 600; color: #f2f4ff; }
+.hero-sub { margin-top: 0.25rem; }
+.btn-x {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.5rem 0.85rem; border-radius: 8px; background: #000;
+  color: #fff; border: 1px solid #444; text-decoration: none; font-size: 0.9rem;
+}
+.btn-x:hover { border-color: #888; }
+.mock-label {
+  margin: 0.5rem 0 1rem; padding: 0.6rem 0.8rem; border-radius: 8px;
+  border: 1px dashed #e0b060; color: #f5d08a; background: rgba(224,176,96,0.08);
+  font-weight: 700; font-size: 0.95rem;
+}
+.tranche-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.6rem; align-items: end; }
+.tranche-form button { margin-top: 0; }
+.tranche-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+.tranche-stats > div { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 0.6rem; min-width: 0; }
+.stat-num { display: block; font-size: 1.4rem; font-weight: 700; }
+.stat-label { display: block; font-size: 0.78rem; opacity: 0.75; }
+.phase { font-weight: 600; margin: 0.9rem 0 0.4rem; }
+.phase-building { color: #9fd3a0; }
+.phase-challenge { color: #f5d08a; }
+.phase-due { color: #f0a0a0; }
+.tl-bar { position: relative; height: 12px; border-radius: 6px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.tl-fill { position: absolute; left: 0; top: 0; bottom: 0; background: #4c7dff; }
+.tl-challenge { position: absolute; right: 0; top: 0; bottom: 0; background: repeating-linear-gradient(45deg, rgba(245,208,138,0.55) 0 4px, rgba(245,208,138,0.2) 4px 8px); }
+.tl-legend { display: flex; justify-content: space-between; gap: 0.4rem; font-size: 0.72rem; opacity: 0.75; margin-top: 0.3rem; flex-wrap: wrap; }
+.tranche-list { list-style: none; padding: 0; margin: 0; }
+.tranche-list li { padding: 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.07); min-width: 0; }
+.tr-row1 { display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+.tr-row2 { margin: 0.15rem 0 0; overflow-wrap: anywhere; }
+@media (max-width: 560px) {
+  .tranche-form { grid-template-columns: 1fr; }
+  .tranche-stats { grid-template-columns: 1fr 1fr; }
+  .stat-num { font-size: 1.15rem; }
+  .pitch { font-size: 1.05rem; }
+}
