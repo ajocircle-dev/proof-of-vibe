@@ -8,6 +8,8 @@ import {
   attestedSince,
   CHALLENGE_HOURS,
   computeTrancheWindow,
+  formatAgentGroup,
+  groupAgents,
   defaultStartMs,
   formatDuration,
   parseStartDate,
@@ -16,6 +18,7 @@ import {
 } from "../../lib/tranche";
 import { badgeLink, shareText } from "../../lib/share";
 import { ShareOnX } from "../../components/share-x";
+import { loadAgentCard } from "../verify-client";
 
 function readQuery() {
   if (typeof window === "undefined") return { repo: DOGFOOD_REPO, since: null as string | null };
@@ -35,7 +38,20 @@ export function TrancheClient() {
   const [items, setItems] = useState<TimelineItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState<number>(() => Date.now());
+  const [names, setNames] = useState<Record<string, string>>({});
   const repo = useMemo(() => normalizeRepo(repoInput), [repoInput]);
+
+  useEffect(() => {
+    if (!items) return;
+    for (const g of groupAgents(items)) {
+      const id = Number(g.agentId);
+      if (!id || names[g.agentId]) continue;
+      loadAgentCard(id)
+        .then((c) => { if (c?.name) setNames((n) => ({ ...n, [g.agentId]: c.name! })); })
+        .catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
 
   useEffect(() => {
     const q = readQuery();
@@ -70,7 +86,8 @@ export function TrancheClient() {
   const startMs = parseStartDate(startInput) ?? defaultStartMs(now);
   const win = computeTrancheWindow(startMs, now);
   const since = items ? attestedSince(items, startMs) : [];
-  const agents = [...new Set(since.map((it) => `${it.decoded.agentTool || "agent"} #${it.decoded.agentId ?? "0"}`))];
+  const groups = groupAgents(since);
+  const agents = groups.map((g) => formatAgentGroup(g, names[g.agentId]));
   const challengePct = (CHALLENGE_HOURS * 3_600_000) / (TRANCHE_DAYS * 86_400_000);
 
   return (

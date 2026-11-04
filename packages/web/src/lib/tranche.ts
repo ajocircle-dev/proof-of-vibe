@@ -83,3 +83,23 @@ export function formatDuration(ms: number): string {
   if (h > 0) return `${h}h ${m}m`;
   return `${m}m`;
 }
+
+export type AgentGroup = { agentId: string; tools: string[]; count: number };
+
+/** Group attestations by agentId, listing distinct tools in first-seen order. */
+export function groupAgents(items: TimelineItem[]): AgentGroup[] {
+  const map = new Map<string, AgentGroup>();
+  for (const it of items) {
+    const id = String(it.decoded.agentId ?? "0");
+    const tool = String(it.decoded.agentTool || "unknown");
+    let g = map.get(id);
+    if (!g) { g = { agentId: id, tools: [], count: 0 }; map.set(id, g); }
+    g.count++;
+    if (!g.tools.includes(tool)) g.tools.push(tool);
+  }
+  return [...map.values()];
+}
+
+export function formatAgentGroup(g: AgentGroup, name?: string): string {
+  return `#${g.agentId}${name ? ` ${name}` : ""} (${g.tools.join(", ")})`;
+}

@@ -55,7 +55,7 @@ async function readTokenUri(agentId: number): Promise<string> {
   return decodeAbiString(String(body.result || ""));
 }
 
-async function loadAgentCard(agentId: number): Promise<AgentCard | null> {
+export async function loadAgentCard(agentId: number): Promise<AgentCard | null> {
   const tokenUri = await readTokenUri(agentId);
   if (!tokenUri) return null;
   let card: Omit<AgentCard, "tokenUri"> = {};

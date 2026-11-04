@@ -2,6 +2,8 @@
 
 [![Proof of Vibe](https://proof-of-vibe.pages.dev/badge?repo=ajocircle-dev/proof-of-vibe)](https://proof-of-vibe.pages.dev/?repo=ajocircle-dev/proof-of-vibe)
 
+> Vibestarter proves an agent built your app at launch. Proof of Vibe proves you kept building it, commit by commit, on Base.
+
 Onchain provenance trail for AI-built apps.
 
 Each commit can get an [EAS](https://attest.org) attestation on **Base Sepolia**. The attestation names the [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) agent that helped write the code, the commit and tree hashes, a hash of the agent session, and the builder. A CLI, GitHub Action, and browser wallet flow post attestations. A public verify page turns them into a timeline with a live shareable badge.
@@ -11,9 +13,19 @@ Builder: **bosso**. Network: **Base Sepolia (84532) only**. No mainnet funds. We
 ## Live links
 
 - App (landing + verify): https://proof-of-vibe.pages.dev
+- Tranche evidence (concept mock): https://proof-of-vibe.pages.dev/tranche/?repo=ajocircle-dev/proof-of-vibe
 - Attest onboarding: https://proof-of-vibe.pages.dev/attest/
 - Live badge (any repo): https://proof-of-vibe.pages.dev/badge?repo=owner/name
 - Repo: https://github.com/ajocircle-dev/proof-of-vibe
+
+## Complement to Vibestarter
+
+- **Origin Capsule (launch).** [Vibestarter](https://vibestarter.xyz) seals founder, ERC-8004 agent and build artifact once at launch.
+- **Continuous proof (after launch).** Proof of Vibe attests every commit on Base with EAS, tied to the same ERC-8004 agentId.
+- **Tranche evidence.** Raises release in tranches (10% at close, then 15% every 30 days) with a 72h holder challenge window. The `/tranche` page lists commits attested since the last tranche, with agent, GitHub and easscan links, read live from EAS.
+- **Label.** The tranche page is a *concept integration mock, not an official Vibestarter feature*.
+
+![Tranche evidence panel](docs/v2-tranche-panel.png)
 
 ## Honesty limit
 

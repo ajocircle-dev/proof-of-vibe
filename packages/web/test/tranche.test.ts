@@ -74,3 +74,15 @@ describe("tranche helpers", () => {
     assert.ok(u.includes("%26"));
   });
 });
+
+import { formatAgentGroup, groupAgents } from "../src/lib/tranche.ts";
+describe("groupAgents", () => {
+  it("dedupes by agentId and lists tools", () => {
+    const mk = (agentId: string, agentTool: string) => ({ uid: "0x", time: 1, attester: "0x1", txid: "0x2", decoded: { agentId, agentTool } });
+    const g = groupAgents([mk("10554", "Codex"), mk("10554", "Playwright"), mk("10554", "Codex"), mk("7", "Cursor")]);
+    assert.equal(g.length, 2);
+    assert.deepEqual(g[0], { agentId: "10554", tools: ["Codex", "Playwright"], count: 3 });
+    assert.equal(formatAgentGroup(g[0]!, "bosso-codex"), "#10554 bosso-codex (Codex, Playwright)");
+    assert.equal(formatAgentGroup(g[1]!), "#7 (Cursor)");
+  });
+});
