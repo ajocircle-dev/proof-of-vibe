@@ -20,7 +20,7 @@ export function trancheLink(repo: string): string {
 export function shareText(repo: string, kind: "landing" | "verify" | "tranche"): string {
   const r = normalizeRepo(repo);
   if (kind === "tranche") {
-    return `Tranche evidence for ${r}: every commit since the last tranche, attested on Base with EAS.\nVerify: ${trancheLink(r)}\nBadge: ${badgeLink(r)}\n#Vibeathon @vibestarter`;
+    return `Tranche evidence for ${r}: every commit since the last tranche, attested on Base with EAS.\nVerify: ${trancheLink(r)}\nBadge: ${badgeLink(r)}\n#Vibeathon`;
   }
   if (kind === "verify") {
     return `${r} is building in public on Base: per-commit EAS attestations linked to an ERC-8004 agent.\nVerify: ${verifyLink(r)}\nBadge: ${badgeLink(r)}\n#Vibeathon`;
