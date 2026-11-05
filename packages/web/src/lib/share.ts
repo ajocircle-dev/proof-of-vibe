@@ -5,6 +5,29 @@ export function xIntentUrl(text: string): string {
   return `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
 }
 
+/** iOS / universal Twitter app scheme. Opens the X app when installed. */
+export function xAppUrl(text: string): string {
+  return `twitter://post?message=${encodeURIComponent(text)}`;
+}
+
+/**
+ * Android Intent URL: opens com.twitter.android when installed,
+ * otherwise falls back to the https intent page.
+ */
+export function xAndroidIntentUrl(text: string): string {
+  const web = xIntentUrl(text);
+  const path = `x.com/intent/post?text=${encodeURIComponent(text)}`;
+  return `intent://${path}#Intent;scheme=https;package=com.twitter.android;S.browser_fallback_url=${encodeURIComponent(web)};end`;
+}
+
+export function isMobileUa(ua: string): boolean {
+  return /iPhone|iPad|iPod|Android/i.test(ua);
+}
+
+export function isAndroidUa(ua: string): boolean {
+  return /Android/i.test(ua);
+}
+
 export function verifyLink(repo: string): string {
   return `${APP_URL}/?repo=${encodeURIComponent(normalizeRepo(repo))}`;
 }

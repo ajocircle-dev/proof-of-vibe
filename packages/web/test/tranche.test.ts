@@ -7,7 +7,7 @@ import {
   formatDuration,
   parseStartDate,
 } from "../src/lib/tranche.ts";
-import { xIntentUrl } from "../src/lib/share.ts";
+import { isAndroidUa, isMobileUa, xAndroidIntentUrl, xAppUrl, xIntentUrl } from "../src/lib/share.ts";
 
 const DAY = 86_400_000;
 const HOUR = 3_600_000;
@@ -72,6 +72,19 @@ describe("tranche helpers", () => {
     assert.ok(u.startsWith("https://x.com/intent/post?text="));
     assert.ok(!u.slice(31).includes(" "));
     assert.ok(u.includes("%26"));
+  });
+  it("builds app and Android intent urls that keep the text", () => {
+    const text = "hello @vibestarterxyz";
+    const app = xAppUrl(text);
+    assert.ok(app.startsWith("twitter://post?message="));
+    assert.ok(app.includes(encodeURIComponent(text)));
+    const and = xAndroidIntentUrl(text);
+    assert.ok(and.startsWith("intent://x.com/intent/post?text="));
+    assert.ok(and.includes("package=com.twitter.android"));
+    assert.ok(and.includes("S.browser_fallback_url="));
+    assert.ok(isMobileUa("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)"));
+    assert.ok(isAndroidUa("Mozilla/5.0 (Linux; Android 14)"));
+    assert.equal(isMobileUa("Mozilla/5.0 (Macintosh)"), false);
   });
 });
 
